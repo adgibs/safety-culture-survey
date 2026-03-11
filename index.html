@@ -27,6 +27,83 @@
         .hero-header h1 { font-size: 28px; margin-bottom: 8px; font-weight: 600; }
         .hero-header p { font-size: 16px; opacity: 0.95; }
 
+        /* Login page */
+        #loginPage .login-card {
+            background: white;
+            border-radius: 0 0 12px 12px;
+            padding: 30px 40px 40px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .login-info {
+            font-size: 14px;
+            line-height: 1.7;
+            color: #555;
+            margin-bottom: 24px;
+        }
+        .login-info h3 {
+            font-size: 16px;
+            color: #1B3A5C;
+            margin: 16px 0 6px 0;
+        }
+        .login-info h3:first-child { margin-top: 0; }
+        .login-info ul {
+            margin: 6px 0 0 20px;
+        }
+        .login-info ul li { margin-bottom: 4px; }
+        .login-divider {
+            border: none;
+            border-top: 2px solid #e0e0e0;
+            margin: 24px 0;
+        }
+        .code-input-section {
+            text-align: center;
+        }
+        .code-input-section label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .code-input {
+            width: 320px;
+            max-width: 100%;
+            padding: 14px 18px;
+            font-size: 18px;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .code-input:focus { border-color: #1B3A5C; }
+        .code-input.error { border-color: #C62828; }
+        .login-error {
+            color: #C62828;
+            font-size: 13px;
+            margin-top: 8px;
+            display: none;
+        }
+        .login-error.show { display: block; }
+        .login-btn {
+            display: inline-block;
+            margin-top: 16px;
+            background: linear-gradient(135deg, #1B3A5C, #2E5E8E);
+            color: white;
+            border: none;
+            padding: 14px 40px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: transform 0.2s;
+        }
+        .login-btn:hover { transform: translateY(-2px); }
+
         .card {
             background: white;
             border-radius: 8px;
@@ -204,6 +281,49 @@
         .status-banner.error { display: block; background: #fbe9e7; color: #C62828; border: 1px solid #ef9a9a; }
         .status-banner.sending { display: block; background: #e3f2fd; color: #1565C0; border: 1px solid #90caf9; }
 
+        /* Thank you page */
+        #thankYouPage { display: none; }
+        .thankyou-card {
+            background: white;
+            border-radius: 0 0 12px 12px;
+            padding: 50px 40px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .thankyou-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+        .thankyou-card h2 {
+            font-size: 26px;
+            color: #2E7D32;
+            margin-bottom: 12px;
+        }
+        .thankyou-card p {
+            font-size: 15px;
+            color: #555;
+            line-height: 1.6;
+            max-width: 500px;
+            margin: 0 auto 8px;
+        }
+        .thankyou-score {
+            display: inline-block;
+            background: linear-gradient(135deg, #1B3A5C, #2E5E8E);
+            color: white;
+            border-radius: 12px;
+            padding: 20px 40px;
+            margin: 24px 0;
+        }
+        .thankyou-score .score { font-size: 42px; font-weight: 700; }
+        .thankyou-score .label { font-size: 14px; opacity: 0.9; display: block; margin-top: 4px; }
+        .thankyou-btn-row {
+            margin-top: 30px;
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
         /* Results page */
         #resultsPage { display: none; }
 
@@ -304,16 +424,8 @@
             font-size: 14px;
             gap: 12px;
         }
-        .rank-item .rank-num {
-            font-weight: 700;
-            font-size: 16px;
-            min-width: 28px;
-        }
-        .rank-item .rank-score {
-            font-weight: 700;
-            min-width: 40px;
-            text-align: right;
-        }
+        .rank-item .rank-num { font-weight: 700; font-size: 16px; min-width: 28px; }
+        .rank-item .rank-score { font-weight: 700; min-width: 40px; text-align: right; }
         .rank-item .rank-text { flex: 1; }
         .rank-item.top { background: #e8f5e9; }
         .rank-item.bottom { background: #fbe9e7; }
@@ -350,7 +462,7 @@
         .btn:hover { transform: translateY(-1px); }
         .btn-primary { background: #1B3A5C; color: white; }
         .btn-outline { background: white; color: #1B3A5C; border: 2px solid #1B3A5C; }
-        .btn-danger { background: #C62828; color: white; }
+        .btn-green { background: linear-gradient(135deg, #2E7D32, #43A047); color: white; }
 
         .hidden { display: none !important; }
 
@@ -359,13 +471,51 @@
             .likert-value { font-size: 16px; }
             .cat-bar-label { min-width: 120px; font-size: 12px; }
             body { padding: 10px; }
+            .code-input { width: 100%; }
+            #loginPage .login-card { padding: 20px; }
         }
     </style>
 </head>
 <body>
 
+<!-- LOGIN PAGE -->
+<div id="loginPage" class="container">
+    <div class="hero-header">
+        <h1>Safety Culture Maturity Survey</h1>
+        <p>30 questions based on the Hudson Safety Culture Ladder.</p>
+        <p>Score each statement from 1 (Strongly Disagree) to 6 (Strongly Agree).</p>
+    </div>
+    <div class="login-card">
+        <div class="login-info">
+            <h3>About this survey</h3>
+            This survey measures your site's safety culture maturity across five key areas: Reporting &amp; Communication, Learning &amp; Improvement, Risk Management &amp; Awareness, Leadership &amp; Trust, and Behaviour &amp; Culture. Results are mapped to the Hudson Safety Culture Ladder, a widely recognised framework used across COMAH and high-hazard industries.
+
+            <h3>How it works</h3>
+            <ul>
+                <li>You will be asked 30 statements — rate each one from 1 (Strongly Disagree) to 6 (Strongly Agree)</li>
+                <li>You can add an optional comment to any question</li>
+                <li>The survey typically takes 10–15 minutes to complete</li>
+                <li>Your progress is saved automatically — you can close the page and return later</li>
+            </ul>
+
+            <h3>Anonymity</h3>
+            Your responses are completely anonymous. Your unique access code is used only to link your answers together — it is not connected to your name, role, or any personal information. Please answer honestly to help build an accurate picture of our safety culture.
+        </div>
+
+        <hr class="login-divider">
+
+        <div class="code-input-section">
+            <label>Enter your unique access code to begin</label>
+            <input type="text" id="accessCode" class="code-input" placeholder="e.g. RELAY-NODE-HAVEN-46" autocomplete="off" spellcheck="false">
+            <div id="loginError" class="login-error">Invalid or already-used access code. Please check and try again.</div>
+            <br>
+            <button class="login-btn" onclick="validateCode()">Start Survey</button>
+        </div>
+    </div>
+</div>
+
 <!-- SURVEY PAGE -->
-<div id="surveyPage" class="container">
+<div id="surveyPage" class="container hidden">
     <div class="hero-header">
         <h1>Safety Culture Maturity Survey</h1>
         <p>30 questions based on the Hudson Safety Culture Ladder.</p>
@@ -384,10 +534,35 @@
     </form>
 </div>
 
+<!-- THANK YOU PAGE -->
+<div id="thankYouPage" class="container hidden">
+    <div class="hero-header">
+        <h1>Safety Culture Maturity Survey</h1>
+        <p>Thank you for your contribution.</p>
+    </div>
+    <div class="thankyou-card">
+        <div class="thankyou-icon">&#x2705;</div>
+        <h2>Survey Submitted Successfully</h2>
+        <p>Your responses have been recorded anonymously and will be used to help understand and improve safety culture across the site.</p>
+        <p>Below is your individual score based on the Hudson Safety Culture Ladder.</p>
+
+        <div class="thankyou-score">
+            <span class="score" id="thankYouScore">-</span><span style="font-size:18px;opacity:0.8"> / 6.00</span>
+            <span class="label" id="thankYouHudson"></span>
+        </div>
+
+        <p style="font-size:13px;color:#888;">Your access code has been used. If you need to retake the survey, please contact the survey administrator.</p>
+
+        <div class="thankyou-btn-row">
+            <button class="btn btn-green" onclick="viewDetailedResults()">View Detailed Results</button>
+        </div>
+    </div>
+</div>
+
 <!-- RESULTS PAGE -->
-<div id="resultsPage" class="container">
+<div id="resultsPage" class="container hidden">
     <div class="results-header">
-        <h2>Your Results</h2>
+        <h2>Your Detailed Results</h2>
         <div class="score-badge">
             <span class="score" id="overallScore">-</span><span class="out-of"> / 6.00</span>
         </div>
@@ -410,7 +585,6 @@
         <div id="commentsSummary"></div>
 
         <div class="btn-row">
-            <button class="btn btn-primary" onclick="retakeSurvey()">Retake Survey</button>
             <button class="btn btn-outline" onclick="exportResults()">Export Results (JSON)</button>
         </div>
     </div>
@@ -418,10 +592,37 @@
 
 <script>
 // ============================================================
-// CONFIGURATION — paste your Google Apps Script URL here
+// CONFIGURATION
 // ============================================================
 const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbya8bKwWjBqkyfYSKXZkY8wbA6wG1dR2nXPpyS-dlYm-Qa06IfGes66mlcowcK1t3AW/exec';
-// ============================================================
+
+const ACCESS_CODES = [
+    'RELAY-NODE-HAVEN-46','RELAY-APEX-PLUME-12','SHAFT-DELTA-BROOK-40','PANEL-GAMMA-RIDGE-17',
+    'TORCH-THETA-GLEAM-37','STACK-THETA-HAVEN-72','PROBE-GRID-CORAL-93','VALVE-NODE-CREST-90',
+    'TORCH-NOVA-HAVEN-82','CRANE-LINK-IVORY-81','STACK-GRID-EMBER-48','PROBE-OMEGA-CREST-36',
+    'TORCH-ZETA-IVORY-51','GAUGE-NOVA-TOWER-50','PROBE-ZETA-FORGE-12','RELAY-ECHO-FIRTH-73',
+    'PROBE-THETA-CORAL-50','SIREN-NODE-THORN-96','RELAY-DELTA-FROST-17','PLANT-ECHO-FIRTH-60',
+    'ALARM-ALPHA-MARSH-14','BUND-LAMBDA-MARSH-47','GUARD-SIGMA-TOWER-58','HATCH-CORE-RIDGE-87',
+    'SPARK-LAMBDA-EMBER-54','FLARE-VOLT-BLAZE-59','PROBE-OMEGA-FIRTH-62','RELAY-KAPPA-CREST-30',
+    'STEAM-APEX-THORN-84','BUND-THETA-GLEAM-13','SPARK-VOLT-SLATE-20','ALARM-OMEGA-FIRTH-24',
+    'CRANE-GRID-ORBIT-60','PLANT-GAMMA-BROOK-62','SPARK-VOLT-CORAL-22','VALVE-ZETA-THORN-72',
+    'PANEL-GRID-BROOK-15','SHAFT-GAMMA-IVORY-15','FLARE-BETA-IVORY-65','BUND-GAMMA-TOWER-39',
+    'ALARM-DELTA-EMBER-59','GAUGE-THETA-TOWER-68','TURBO-GRID-CORAL-92','RELAY-ALPHA-PLUME-20',
+    'HATCH-DELTA-CORAL-20','BUND-OMEGA-GROVE-46','PANEL-OMEGA-HAVEN-77','BUND-NOVA-THORN-93',
+    'SIREN-NODE-CREST-87','GUARD-THETA-HAVEN-49','FLARE-BETA-GLEAM-82','STACK-CORE-EMBER-47',
+    'PROBE-OMEGA-CREST-78','SPARK-FLUX-FORGE-23','SHAFT-FLUX-GLEAM-64','DRAFT-BETA-EMBER-39',
+    'STACK-NODE-ORBIT-60','GUARD-LAMBDA-FROST-47','GUARD-DELTA-MARSH-33','HATCH-OMEGA-IVORY-12',
+    'STEAM-MESA-PLUME-20','CRANE-DELTA-MARSH-35','PLANT-NODE-CLIFF-94','DRAFT-THETA-RIDGE-23',
+    'VALVE-OMEGA-MARSH-13','PLANT-NOVA-ORBIT-10','CRANE-CORE-PLUME-20','PANEL-KAPPA-BLAZE-61',
+    'PLANT-LAMBDA-GROVE-97','BUND-OMEGA-ORBIT-69','TORCH-LINK-FORGE-84','ALARM-GRID-BROOK-63',
+    'PROBE-KAPPA-HAVEN-68','VALVE-MESA-HAVEN-20','FLARE-VOLT-RIDGE-78','DRAFT-LINK-GROVE-75',
+    'PLANT-ECHO-RIDGE-43','SHAFT-MESA-EMBER-76','ALARM-MESA-TOWER-98','PLANT-ZETA-CORAL-39',
+    'SIREN-NOVA-GROVE-25','STACK-ALPHA-CREST-71','SIREN-LINK-CLIFF-63','SPARK-OMEGA-PLUME-22',
+    'ALARM-BETA-FROST-15','RELAY-APEX-GLEAM-26','PLANT-GAMMA-BLAZE-74','PROBE-VOLT-CLIFF-55',
+    'TURBO-NOVA-FIRTH-25','PANEL-GRID-CORAL-96','CRANE-APEX-GROVE-51','TURBO-OMEGA-CORAL-82',
+    'PROBE-SIGMA-CREST-39','PROBE-SIGMA-CREST-71','PLANT-LAMBDA-HAVEN-70','PLANT-GRID-EMBER-26',
+    'RELAY-OMEGA-FIRTH-33','SIREN-GAMMA-CREST-81','DRAFT-APEX-PLUME-46','RELAY-LINK-HAVEN-66'
+];
 
 const QUESTIONS = [
     {id:1,cat:'A',text:'People feel comfortable reporting small leaks, odours, or weak signals without fear of blame.',rev:false},
@@ -474,26 +675,19 @@ const HUDSON = [
 
 const LIKERT = ['Strongly Disagree','Disagree','Slightly Disagree','Slightly Agree','Agree','Strongly Agree'];
 
+let currentCode = null;
 let answers = {};
 let comments = {};
+let usedCodes = new Set();
 
-// Anonymous session ID — unique per browser, persists across refreshes
-function getSessionId(){
-    let id = localStorage.getItem('safetySurveySessionId');
-    if(!id){
-        id = 'R-' + Date.now().toString(36) + '-' + Math.random().toString(36).substr(2,6);
-        localStorage.setItem('safetySurveySessionId', id);
-    }
-    return id;
-}
-const SESSION_ID = getSessionId();
-
-// localStorage persistence
+// ============================================================
+// Persistence
+// ============================================================
 function saveData(){
     try{
         localStorage.setItem('safetyCultureSurvey', JSON.stringify({
-            answers, comments,
-            submitted: document.getElementById('resultsPage').style.display === 'block'
+            currentCode, answers, comments, usedCodes: Array.from(usedCodes),
+            page: getCurrentPage()
         }));
     }catch(e){}
 }
@@ -502,13 +696,65 @@ function loadData(){
         const d = localStorage.getItem('safetyCultureSurvey');
         if(d){
             const p = JSON.parse(d);
+            currentCode = p.currentCode || null;
             answers = p.answers || {};
             comments = p.comments || {};
-            return p.submitted || false;
+            usedCodes = new Set(p.usedCodes || []);
+            return p.page || 'login';
         }
-        return false;
-    }catch(e){ return false; }
+        return 'login';
+    }catch(e){ return 'login'; }
 }
+
+function getCurrentPage(){
+    if(!document.getElementById('thankYouPage').classList.contains('hidden')) return 'thankyou';
+    if(!document.getElementById('resultsPage').classList.contains('hidden')) return 'results';
+    if(!document.getElementById('surveyPage').classList.contains('hidden')) return 'survey';
+    return 'login';
+}
+
+function showPage(pageId){
+    ['loginPage','surveyPage','thankYouPage','resultsPage'].forEach(id => {
+        document.getElementById(id).classList.add('hidden');
+    });
+    document.getElementById(pageId).classList.remove('hidden');
+    window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// ============================================================
+// Login
+// ============================================================
+function validateCode(){
+    const input = document.getElementById('accessCode').value.trim().toUpperCase();
+    const errorEl = document.getElementById('loginError');
+    const inputEl = document.getElementById('accessCode');
+
+    if(!ACCESS_CODES.includes(input)){
+        errorEl.textContent = 'Invalid access code. Please check and try again.';
+        errorEl.classList.add('show');
+        inputEl.classList.add('error');
+        return;
+    }
+
+    if(usedCodes.has(input)){
+        errorEl.textContent = 'This access code has already been used to submit a survey.';
+        errorEl.classList.add('show');
+        inputEl.classList.add('error');
+        return;
+    }
+
+    errorEl.classList.remove('show');
+    inputEl.classList.remove('error');
+    currentCode = input;
+    saveData();
+    showPage('surveyPage');
+    buildSurvey();
+}
+
+// Allow Enter key on code input
+document.getElementById('accessCode').addEventListener('keypress', function(e){
+    if(e.key === 'Enter'){ e.preventDefault(); validateCode(); }
+});
 
 function getHudson(score){
     for(const h of HUDSON) if(score>=h.min) return h;
@@ -524,7 +770,6 @@ function sendToGoogleSheets(callback){
     const overall = vals.reduce((a,b)=>a+b,0)/vals.length;
     const hudson = getHudson(overall);
 
-    // Build category averages
     const catScores = {};
     Object.entries(CATEGORIES).forEach(([id,cat]) => {
         const qs = QUESTIONS.filter(q=>q.cat===id);
@@ -532,9 +777,8 @@ function sendToGoogleSheets(callback){
         catScores[cat.name] = scores.length ? Number((scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(2)) : null;
     });
 
-    // Flatten into row data
     const payload = {
-        sessionId: SESSION_ID,
+        sessionId: currentCode,
         timestamp: new Date().toISOString(),
         overallScore: Number(overall.toFixed(2)),
         hudsonLevel: hudson.name,
@@ -545,13 +789,9 @@ function sendToGoogleSheets(callback){
         catBehaviour: catScores['Behaviour & Culture']
     };
 
-    // Add raw answers Q1-Q30
     for(let i=1;i<=30;i++) payload['q'+i] = answers[i] || '';
-
-    // Add adjusted scores Q1a-Q30a
     for(let i=1;i<=30;i++) payload['q'+i+'_adj'] = adj[i] !== undefined ? adj[i] : '';
 
-    // Add comments
     const commentsList = [];
     Object.keys(comments).sort((a,b)=>Number(a)-Number(b)).forEach(qid => {
         commentsList.push('Q'+qid+': '+comments[qid]);
@@ -559,8 +799,7 @@ function sendToGoogleSheets(callback){
     payload.comments = commentsList.join(' | ');
 
     if(GOOGLE_SHEETS_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE'){
-        // No URL configured — skip the POST, just show results locally
-        console.log('Google Sheets URL not configured. Submission data:', payload);
+        console.log('Google Sheets URL not configured. Payload:', payload);
         callback(true);
         return;
     }
@@ -575,13 +814,12 @@ function sendToGoogleSheets(callback){
     })
     .then(() => {
         showStatus('success', 'Responses saved successfully.');
-        localStorage.setItem('safetySurveySubmitted_'+SESSION_ID, 'true');
         callback(true);
     })
     .catch(err => {
         console.error('Submission error:', err);
-        showStatus('error', 'Could not save to server — your results are still available below.');
-        callback(true); // still show results locally
+        showStatus('error', 'Could not save to server \u2014 your results are still available below.');
+        callback(true);
     });
 }
 
@@ -636,11 +874,6 @@ function buildSurvey(){
 }
 
 function selectAnswer(qid, val, btn){
-    // Check if already submitted
-    if(localStorage.getItem('safetySurveySubmitted_'+SESSION_ID)){
-        alert('You have already submitted your survey. Click "Retake Survey" on your results page to start again.');
-        return;
-    }
     answers[qid] = val;
     const card = document.getElementById('qcard'+qid);
     card.classList.add('answered');
@@ -678,18 +911,13 @@ function getAdjustedScores(){
     return adj;
 }
 
+// ============================================================
 // Submit
+// ============================================================
 document.getElementById('surveyForm').addEventListener('submit', function(e){
     e.preventDefault();
     if(Object.keys(answers).length < 30){
         alert('Please answer all 30 questions before submitting.');
-        return;
-    }
-
-    // Check duplicate submission
-    if(localStorage.getItem('safetySurveySubmitted_'+SESSION_ID)){
-        alert('You have already submitted your survey.');
-        showResults();
         return;
     }
 
@@ -700,18 +928,32 @@ document.getElementById('surveyForm').addEventListener('submit', function(e){
     sendToGoogleSheets(function(ok){
         btn.disabled = false;
         btn.textContent = 'Submit Survey';
-        showResults();
+
+        // Mark code as used
+        usedCodes.add(currentCode);
+
+        // Show thank you page
+        const adj = getAdjustedScores();
+        const vals = Object.values(adj);
+        const overall = vals.reduce((a,b)=>a+b,0)/vals.length;
+        const hudson = getHudson(overall);
+
+        document.getElementById('thankYouScore').textContent = overall.toFixed(2);
+        document.getElementById('thankYouHudson').textContent = hudson.name + ' \u2014 ' + hudson.desc;
+
+        showPage('thankYouPage');
+        saveData();
     });
 });
 
-function showResults(){
+// ============================================================
+// Results
+// ============================================================
+function viewDetailedResults(){
     const adj = getAdjustedScores();
     const vals = Object.values(adj);
     const overall = vals.reduce((a,b)=>a+b,0)/vals.length;
     const hudson = getHudson(overall);
-
-    document.getElementById('surveyPage').style.display = 'none';
-    document.getElementById('resultsPage').style.display = 'block';
 
     document.getElementById('overallScore').textContent = overall.toFixed(2);
     document.getElementById('hudsonLevelResult').innerHTML =
@@ -721,9 +963,9 @@ function showResults(){
     renderCategoryBars(adj);
     renderTopBottom(adj);
     renderComments();
-    saveData();
 
-    window.scrollTo({top:0,behavior:'smooth'});
+    showPage('resultsPage');
+    saveData();
 }
 
 function renderHudsonLadder(score){
@@ -761,12 +1003,8 @@ function renderTopBottom(adj){
     const ranked = QUESTIONS.map(q=>({id:q.id,text:q.text,cat:q.cat,score:adj[q.id]}))
         .filter(q=>q.score!==undefined)
         .sort((a,b)=>b.score-a.score);
-
-    const top5 = ranked.slice(0,5);
-    const bot5 = ranked.slice(-5).reverse();
-
-    document.getElementById('topStatements').innerHTML = renderRankList(top5,'top');
-    document.getElementById('bottomStatements').innerHTML = renderRankList(bot5,'bottom');
+    document.getElementById('topStatements').innerHTML = renderRankList(ranked.slice(0,5),'top');
+    document.getElementById('bottomStatements').innerHTML = renderRankList(ranked.slice(-5).reverse(),'bottom');
 }
 
 function renderRankList(items, cls){
@@ -783,12 +1021,7 @@ function renderComments(){
     const keys = Object.keys(comments);
     const titleEl = document.getElementById('commentsSectionTitle');
     const summaryEl = document.getElementById('commentsSummary');
-
-    if(keys.length === 0){
-        titleEl.style.display = 'none';
-        summaryEl.innerHTML = '';
-        return;
-    }
+    if(keys.length === 0){ titleEl.style.display = 'none'; summaryEl.innerHTML = ''; return; }
     titleEl.style.display = '';
     let html = '';
     keys.sort((a,b)=>Number(a)-Number(b)).forEach(qid => {
@@ -801,30 +1034,16 @@ function renderComments(){
     summaryEl.innerHTML = html;
 }
 
-function retakeSurvey(){
-    answers = {};
-    comments = {};
-    // Clear submission flag and generate new session ID
-    localStorage.removeItem('safetySurveySubmitted_'+SESSION_ID);
-    localStorage.removeItem('safetyCultureSurvey');
-    localStorage.removeItem('safetySurveySessionId');
-    // Reload to get fresh session ID
-    window.location.reload();
-}
-
 function exportResults(){
     const adj = getAdjustedScores();
     const vals = Object.values(adj);
     const overall = vals.reduce((a,b)=>a+b,0)/vals.length;
     const data = {
-        sessionId: SESSION_ID,
+        accessCode: currentCode,
         timestamp: new Date().toISOString(),
         overallScore: Number(overall.toFixed(2)),
         hudsonLevel: getHudson(overall).name,
-        answers,
-        adjustedScores: adj,
-        comments,
-        categoryScores: {}
+        answers, adjustedScores: adj, comments, categoryScores: {}
     };
     Object.entries(CATEGORIES).forEach(([id,cat]) => {
         const qs = QUESTIONS.filter(q=>q.cat===id);
@@ -834,17 +1053,33 @@ function exportResults(){
     const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = `safety_culture_results_${Date.now()}.json`;
+    a.download = 'safety_culture_results_'+Date.now()+'.json';
     a.click();
     URL.revokeObjectURL(a.href);
 }
 
+// ============================================================
 // Initialise
+// ============================================================
 (function init(){
-    const wasSubmitted = loadData();
-    buildSurvey();
-    if(wasSubmitted && Object.keys(answers).length === 30){
-        showResults();
+    const savedPage = loadData();
+
+    if(savedPage === 'thankyou' && currentCode && usedCodes.has(currentCode)){
+        // Already submitted — show thank you
+        const adj = getAdjustedScores();
+        const vals = Object.values(adj);
+        const overall = vals.reduce((a,b)=>a+b,0)/vals.length;
+        const hudson = getHudson(overall);
+        document.getElementById('thankYouScore').textContent = overall.toFixed(2);
+        document.getElementById('thankYouHudson').textContent = hudson.name + ' \u2014 ' + hudson.desc;
+        showPage('thankYouPage');
+    } else if(savedPage === 'results' && currentCode && Object.keys(answers).length === 30){
+        viewDetailedResults();
+    } else if(savedPage === 'survey' && currentCode && Object.keys(answers).length > 0){
+        showPage('surveyPage');
+        buildSurvey();
+    } else {
+        showPage('loginPage');
     }
 })();
 </script>
