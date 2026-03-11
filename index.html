@@ -608,6 +608,11 @@
 
         .hidden { display: none !important; }
 
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
         @media (max-width: 600px) {
             .likert-btn { min-width: 70px; padding: 10px 4px; }
             .likert-value { font-size: 16px; }
@@ -740,12 +745,20 @@
     </div>
     <div class="admin-body">
 
-        <!-- Import Section -->
+        <!-- Load from Spreadsheet -->
         <div class="admin-import-section">
-            <label>Import Data from JSON Export</label>
-            <input type="file" id="adminJsonFile" accept=".json" />
-            <button class="btn btn-primary" onclick="importAdminJSON()">Load JSON Data</button>
-            <p style="font-size:12px;color:#666;margin-top:8px;">This will allow you to view aggregate results from a JSON export.</p>
+            <button class="btn btn-primary" onclick="fetchFromSpreadsheet()" id="btnFetchSheet" style="margin-bottom:10px;">
+                Load Data from Spreadsheet
+            </button>
+            <div id="adminLoadingMsg" style="display:none;color:#1B3A5C;font-size:14px;padding:8px 0;">
+                <span style="display:inline-block;animation:spin 1s linear infinite;margin-right:8px;">⟳</span> Loading data from Google Sheets...
+            </div>
+            <div id="adminFetchError" style="display:none;color:#C62828;font-size:13px;padding:8px 0;"></div>
+            <p style="font-size:12px;color:#666;margin-top:8px;">Fetches all responses directly from your Google Sheet.</p>
+            <hr style="border:none;border-top:1px solid #e0e0e0;margin:16px 0;">
+            <label style="font-size:13px;color:#888;">Or import from a JSON file:</label>
+            <input type="file" id="adminJsonFile" accept=".json" style="margin-top:4px;" />
+            <button class="btn btn-outline" onclick="importAdminJSON()" style="margin-top:6px;">Load JSON Data</button>
         </div>
 
         <!-- Response Overview -->
@@ -822,7 +835,7 @@
 // ============================================================
 // CONFIGURATION
 // ============================================================
-const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbya8bKwWjBqkyfYSKXZkY8wbA6wG1dR2nXPpyS-dlYm-Qa06IfGes66mlcowcK1t3AW/exec';
+const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzKuYaJRPBjJdte2e7DUt-yRQxUs3yW_pGz5LmA-_0coeKK1RavLIL6vP95GunLayKW/exec';
 
 const ACCESS_CODES = [
     'RELAY-NODE-HAVEN-46','RELAY-APEX-PLUME-12','SHAFT-DELTA-BROOK-40','PANEL-GAMMA-RIDGE-17',
@@ -966,7 +979,7 @@ function validateCode(){
         inputEl.classList.remove('error');
         currentCode = null;
         showPage('adminPage');
-        renderAdminDashboard();
+        fetchFromSpreadsheet();
         return;
     }
 
@@ -1335,7 +1348,7 @@ function importAdminJSON(){
 }
 
 function getAdminResponses(){
-    // Try to use imported data first
+    // Try to use imported/fetched data first
     const imported = localStorage.getItem('adminImportedData');
     if(imported){
         try{
@@ -1345,6 +1358,44 @@ function getAdminResponses(){
     }
     // Fall back to adminData in state
     return adminData.responses || [];
+}
+
+function fetchFromSpreadsheet(){
+    const btn = document.getElementById('btnFetchSheet');
+    const loading = document.getElementById('adminLoadingMsg');
+    const errorDiv = document.getElementById('adminFetchError');
+
+    btn.disabled = true;
+    btn.textContent = 'Loading...';
+    loading.style.display = 'block';
+    errorDiv.style.display = 'none';
+
+    fetch(GOOGLE_SHEETS_URL)
+        .then(response => response.json())
+        .then(data => {
+            loading.style.display = 'none';
+            btn.disabled = false;
+            btn.textContent = 'Load Data from Spreadsheet';
+
+            if(data.responses && Array.isArray(data.responses)){
+                adminData = data;
+                localStorage.setItem('adminImportedData', JSON.stringify(adminData));
+                renderAdminDashboard();
+            } else if(data.status === 'error'){
+                errorDiv.textContent = 'Error from server: ' + (data.message || 'Unknown error');
+                errorDiv.style.display = 'block';
+            } else {
+                errorDiv.textContent = 'Unexpected response format from spreadsheet.';
+                errorDiv.style.display = 'block';
+            }
+        })
+        .catch(err => {
+            loading.style.display = 'none';
+            btn.disabled = false;
+            btn.textContent = 'Load Data from Spreadsheet';
+            errorDiv.textContent = 'Could not connect to spreadsheet. Check your Apps Script is deployed with doGet. Error: ' + err.message;
+            errorDiv.style.display = 'block';
+        });
 }
 
 function renderAdminDashboard(){
