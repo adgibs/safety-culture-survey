@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safety Culture Maturity Survey</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f0f2f5;
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container { max-width: 840px; margin: 0 auto; }
+
+        .hero-header {
+            background: linear-gradient(135deg, #1B3A5C 0%, #2E5E8E 100%);
+            color: white;
+            padding: 40px 30px;
+            border-radius: 12px 12px 0 0;
+            text-align: center;
+        }
+        .hero-header h1 { font-size: 28px; margin-bottom: 8px; font-weight: 600; }
+        .hero-header p { font-size: 16px; opacity: 0.95; }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        /* Progress bar */
+        .progress-section {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 0 0 12px 12px;
+            margin-bottom: 20px;
+        }
+        .progress-bar-bg {
+            background: #e0e0e0;
+            border-radius: 20px;
+            height: 8px;
+            overflow: hidden;
+            margin-bottom: 6px;
+        }
+        .progress-bar-fill {
+            background: linear-gradient(90deg, #2E7D32, #43A047);
+            height: 100%;
+            border-radius: 20px;
+            transition: width 0.4s ease;
+            width: 0%;
+        }
+        .progress-text {
+            text-align: right;
+            font-size: 13px;
+            color: #888;
+        }
+
+        /* Category banner */
+        .category-banner {
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Question card */
+        .question-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 24px 24px 20px 24px;
+            margin-bottom: 14px;
+            border-left: 4px solid #e0e0e0;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .question-card.answered {
+            border-left-color: #43A047;
+        }
+        .question-label {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+        .question-text {
+            font-size: 15px;
+            line-height: 1.5;
+            margin-bottom: 16px;
+            color: #333;
+        }
+
+        /* Likert buttons */
+        .likert-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+        .likert-btn {
+            flex: 1;
+            min-width: 90px;
+            padding: 14px 6px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+        .likert-btn:hover {
+            border-color: #1B3A5C;
+            background: #f0f4f8;
+        }
+        .likert-btn.selected {
+            background: #1B3A5C;
+            border-color: #1B3A5C;
+            color: white;
+        }
+        .likert-value {
+            font-size: 18px;
+            font-weight: 700;
+            display: block;
+        }
+        .likert-label {
+            font-size: 11px;
+            display: block;
+            margin-top: 2px;
+        }
+
+        /* Comment field */
+        .comment-toggle {
+            font-size: 13px;
+            color: #1565C0;
+            cursor: pointer;
+            display: inline-block;
+            border: none;
+            background: none;
+            font-family: inherit;
+            padding: 0;
+        }
+        .comment-toggle:hover { text-decoration: underline; }
+        .comment-box {
+            display: none;
+            margin-top: 10px;
+        }
+        .comment-box.show { display: block; }
+        .comment-box textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 13px;
+            resize: vertical;
+            min-height: 60px;
+        }
+        .comment-box textarea:focus {
+            outline: none;
+            border-color: #1565C0;
+        }
+
+        /* Submit button */
+        .submit-section { text-align: center; margin-top: 30px; }
+        .submit-btn {
+            background: linear-gradient(135deg, #2E7D32, #43A047);
+            color: white;
+            border: none;
+            padding: 16px 50px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: transform 0.2s;
+        }
+        .submit-btn:hover { transform: translateY(-2px); }
+        .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        /* Status banner */
+        .status-banner {
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+            display: none;
+        }
+        .status-banner.success { display: block; background: #e8f5e9; color: #2E7D32; border: 1px solid #a5d6a7; }
+        .status-banner.error { display: block; background: #fbe9e7; color: #C62828; border: 1px solid #ef9a9a; }
+        .status-banner.sending { display: block; background: #e3f2fd; color: #1565C0; border: 1px solid #90caf9; }
+
+        /* Results page */
+        #resultsPage { display: none; }
+
+        .results-header {
+            background: linear-gradient(135deg, #1B3A5C 0%, #2E5E8E 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px 12px 0 0;
+            text-align: center;
+        }
+        .results-header h2 { font-size: 24px; margin-bottom: 6px; }
+
+        .score-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.15);
+            border-radius: 12px;
+            padding: 20px 40px;
+            margin: 16px 0;
+        }
+        .score-badge .score { font-size: 48px; font-weight: 700; }
+        .score-badge .out-of { font-size: 18px; opacity: 0.8; }
+
+        .results-body {
+            background: white;
+            border-radius: 0 0 12px 12px;
+            padding: 30px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 30px 0 16px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        .section-title:first-child { margin-top: 0; }
+
+        /* Hudson ladder */
+        .hudson-ladder { margin: 20px 0; }
+        .hudson-rung {
+            display: flex;
+            align-items: center;
+            padding: 10px 16px;
+            border-radius: 8px;
+            margin-bottom: 6px;
+            font-size: 14px;
+            opacity: 0.4;
+            transition: all 0.3s;
+        }
+        .hudson-rung.active {
+            opacity: 1;
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            transform: scale(1.02);
+        }
+        .hudson-level { min-width: 110px; }
+        .hudson-desc { flex: 1; }
+        .hudson-range { min-width: 80px; text-align: right; font-size: 12px; opacity: 0.7; }
+
+        /* Category results */
+        .cat-bar-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            gap: 12px;
+        }
+        .cat-bar-label { min-width: 200px; font-size: 14px; font-weight: 600; }
+        .cat-bar-track {
+            flex: 1;
+            background: #eee;
+            border-radius: 20px;
+            height: 24px;
+            overflow: hidden;
+        }
+        .cat-bar-fill {
+            height: 100%;
+            border-radius: 20px;
+            transition: width 0.6s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            color: white;
+            min-width: 45px;
+        }
+        .cat-bar-score { min-width: 50px; text-align: right; font-weight: 700; font-size: 14px; }
+
+        /* Top/bottom statements */
+        .rank-list { margin: 0; padding: 0; list-style: none; }
+        .rank-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin-bottom: 6px;
+            font-size: 14px;
+            gap: 12px;
+        }
+        .rank-item .rank-num {
+            font-weight: 700;
+            font-size: 16px;
+            min-width: 28px;
+        }
+        .rank-item .rank-score {
+            font-weight: 700;
+            min-width: 40px;
+            text-align: right;
+        }
+        .rank-item .rank-text { flex: 1; }
+        .rank-item.top { background: #e8f5e9; }
+        .rank-item.bottom { background: #fbe9e7; }
+
+        /* Comments summary */
+        .comment-entry {
+            background: #f8f9fa;
+            border-left: 3px solid #1565C0;
+            padding: 10px 14px;
+            border-radius: 0 6px 6px 0;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+        .comment-entry .ce-q { font-weight: 600; margin-bottom: 4px; }
+
+        /* Buttons */
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 24px;
+            justify-content: center;
+        }
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            transition: transform 0.15s;
+        }
+        .btn:hover { transform: translateY(-1px); }
+        .btn-primary { background: #1B3A5C; color: white; }
+        .btn-outline { background: white; color: #1B3A5C; border: 2px solid #1B3A5C; }
+        .btn-danger { background: #C62828; color: white; }
+
+        .hidden { display: none !important; }
+
+        @media (max-width: 600px) {
+            .likert-btn { min-width: 70px; padding: 10px 4px; }
+            .likert-value { font-size: 16px; }
+            .cat-bar-label { min-width: 120px; font-size: 12px; }
+            body { padding: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- SURVEY PAGE -->
+<div id="surveyPage" class="container">
+    <div class="hero-header">
+        <h1>Safety Culture Maturity Survey</h1>
+        <p>30 questions based on the Hudson Safety Culture Ladder.</p>
+        <p>Score each statement from 1 (Strongly Disagree) to 6 (Strongly Agree).</p>
+    </div>
+    <div class="progress-section">
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
+        <div class="progress-text"><span id="progressCount">0</span> of 30 answered</div>
+    </div>
+    <div id="statusBanner" class="status-banner"></div>
+    <form id="surveyForm">
+        <div id="questionsContainer"></div>
+        <div class="submit-section">
+            <button type="submit" class="submit-btn" id="submitBtn">Submit Survey</button>
+        </div>
+    </form>
+</div>
+
+<!-- RESULTS PAGE -->
+<div id="resultsPage" class="container">
+    <div class="results-header">
+        <h2>Your Results</h2>
+        <div class="score-badge">
+            <span class="score" id="overallScore">-</span><span class="out-of"> / 6.00</span>
+        </div>
+        <div id="hudsonLevelResult"></div>
+    </div>
+    <div class="results-body">
+        <div class="section-title">Hudson Safety Culture Ladder</div>
+        <div id="hudsonLadder" class="hudson-ladder"></div>
+
+        <div class="section-title">Category Breakdown</div>
+        <div id="categoryBars"></div>
+
+        <div class="section-title" style="color:#2E7D32;">Top 5 Strongest Statements</div>
+        <div id="topStatements"></div>
+
+        <div class="section-title" style="color:#C62828;">Bottom 5 Weakest Statements</div>
+        <div id="bottomStatements"></div>
+
+        <div class="section-title" id="commentsSectionTitle">Your Comments</div>
+        <div id="commentsSummary"></div>
+
+        <div class="btn-row">
+            <button class="btn btn-primary" onclick="retakeSurvey()">Retake Survey</button>
+            <button class="btn btn-outline" onclick="exportResults()">Export Results (JSON)</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ============================================================
+// CONFIGURATION — paste your Google Apps Script URL here
+// ============================================================
+const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbya8bKwWjBqkyfYSKXZkY8wbA6wG1dR2nXPpyS-dlYm-Qa06IfGes66mlcowcK1t3AW/exec';
+// ============================================================
+
+const QUESTIONS = [
+    {id:1,cat:'A',text:'People feel comfortable reporting small leaks, odours, or weak signals without fear of blame.',rev:false},
+    {id:2,cat:'A',text:'Information about near misses is shared openly across teams.',rev:false},
+    {id:3,cat:'A',text:'Leaders respond constructively when issues or risks are raised.',rev:false},
+    {id:4,cat:'A',text:'There are situations where concerns go unreported because people fear negative consequences for themselves or their team.',rev:true},
+    {id:5,cat:'A',text:'Communication between operations, maintenance, and EHS is open and transparent.',rev:false},
+    {id:6,cat:'A',text:'People who deliver bad news or raise problems tend to be viewed negatively.',rev:true},
+    {id:7,cat:'B',text:'Lessons learned from incidents are shared widely and understood by employees.',rev:false},
+    {id:8,cat:'B',text:'We routinely review trends (e.g., gas detection, alarms) to identify early warnings.',rev:false},
+    {id:9,cat:'B',text:'Near-miss investigations are treated with the same seriousness as incidents.',rev:false},
+    {id:10,cat:'B',text:'The same types of incidents and near-misses keep recurring because the underlying causes are not properly addressed.',rev:true},
+    {id:11,cat:'B',text:'We regularly revisit and update HAZOP/LOPA/bowtie assessments proactively.',rev:false},
+    {id:12,cat:'B',text:'Learning from incidents tends to be a short-lived exercise that fades once the immediate pressure is off.',rev:true},
+    {id:13,cat:'C',text:'People understand the major accident hazards associated with our site (flammable/toxic risks).',rev:false},
+    {id:14,cat:'C',text:'Process safety controls (e.g., alarms, interlocks, PPE) are followed consistently.',rev:false},
+    {id:15,cat:'C',text:'Safety-critical equipment is maintained and tested on schedule.',rev:false},
+    {id:16,cat:'C',text:'Shortcuts on safety-critical maintenance are sometimes accepted to keep the plant running.',rev:true},
+    {id:17,cat:'C',text:'Staff can explain what controls prevent major accidents in their area.',rev:false},
+    {id:18,cat:'C',text:'Risk assessments often describe theoretical situations rather than reflecting real working conditions.',rev:true},
+    {id:19,cat:'D',text:'Managers lead by example in following safety procedures.',rev:false},
+    {id:20,cat:'D',text:'People trust that raising concerns will lead to improvements, not blame.',rev:false},
+    {id:21,cat:'D',text:'Leadership actively encourages open discussion about risks and weak signals.',rev:false},
+    {id:22,cat:'D',text:'Leaders engage regularly with teams on the shop floor about safety.',rev:false},
+    {id:23,cat:'D',text:'After an incident, the primary goal seems to be finding someone to hold responsible rather than understanding what went wrong.',rev:true},
+    {id:24,cat:'D',text:'Production targets are sometimes prioritised ahead of safety when the two come into conflict.',rev:true},
+    {id:25,cat:'E',text:'Teams collaborate effectively across functions when solving safety issues.',rev:false},
+    {id:26,cat:'E',text:'People challenge unsafe behaviours or conditions regardless of seniority.',rev:false},
+    {id:27,cat:'E',text:'We recognise and reward proactive safety behaviours.',rev:false},
+    {id:28,cat:'E',text:'There are times when people stay silent about a potential hazard because they do not want to be seen as difficult.',rev:true},
+    {id:29,cat:'E',text:'Safety culture improvement feels like a box-ticking exercise rather than a genuine priority.',rev:true},
+    {id:30,cat:'E',text:'Our culture supports openness, improvement, and shared responsibility for safety.',rev:false}
+];
+
+const CATEGORIES = {
+    A:{name:'Reporting & Communication',color:'#1565C0',icon:'\u{1F4AC}'},
+    B:{name:'Learning & Improvement',color:'#00838F',icon:'\u{1F4D8}'},
+    C:{name:'Risk Management & Awareness',color:'#C62828',icon:'\u{26A0}\u{FE0F}'},
+    D:{name:'Leadership & Trust',color:'#6A1B9A',icon:'\u{1F91D}'},
+    E:{name:'Behaviour & Culture',color:'#E8A317',icon:'\u{1F3D7}\u{FE0F}'}
+};
+
+const HUDSON = [
+    {level:5,name:'Generative',min:5.2,color:'#2E7D32',desc:'Continuous improvement, proactive risk management, strong trust culture'},
+    {level:4,name:'Proactive',min:4.5,color:'#66BB6A',desc:'Systematic approach, good communication, anticipate problems'},
+    {level:3,name:'Calculative',min:3.5,color:'#FDD835',desc:'Systems in place, compliance-focused, somewhat reactive'},
+    {level:2,name:'Reactive',min:2.5,color:'#F57C00',desc:'Focus on incidents after they occur, limited learning'},
+    {level:1,name:'Pathological',min:0,color:'#C62828',desc:'Ignoring or hiding safety issues, blame-focused'}
+];
+
+const LIKERT = ['Strongly Disagree','Disagree','Slightly Disagree','Slightly Agree','Agree','Strongly Agree'];
+
+let answers = {};
+let comments = {};
+
+// Anonymous session ID — unique per browser, persists across refreshes
+function getSessionId(){
+    let id = localStorage.getItem('safetySurveySessionId');
+    if(!id){
+        id = 'R-' + Date.now().toString(36) + '-' + Math.random().toString(36).substr(2,6);
+        localStorage.setItem('safetySurveySessionId', id);
+    }
+    return id;
+}
+const SESSION_ID = getSessionId();
+
+// localStorage persistence
+function saveData(){
+    try{
+        localStorage.setItem('safetyCultureSurvey', JSON.stringify({
+            answers, comments,
+            submitted: document.getElementById('resultsPage').style.display === 'block'
+        }));
+    }catch(e){}
+}
+function loadData(){
+    try{
+        const d = localStorage.getItem('safetyCultureSurvey');
+        if(d){
+            const p = JSON.parse(d);
+            answers = p.answers || {};
+            comments = p.comments || {};
+            return p.submitted || false;
+        }
+        return false;
+    }catch(e){ return false; }
+}
+
+function getHudson(score){
+    for(const h of HUDSON) if(score>=h.min) return h;
+    return HUDSON[HUDSON.length-1];
+}
+
+// ============================================================
+// Google Sheets submission
+// ============================================================
+function sendToGoogleSheets(callback){
+    const adj = getAdjustedScores();
+    const vals = Object.values(adj);
+    const overall = vals.reduce((a,b)=>a+b,0)/vals.length;
+    const hudson = getHudson(overall);
+
+    // Build category averages
+    const catScores = {};
+    Object.entries(CATEGORIES).forEach(([id,cat]) => {
+        const qs = QUESTIONS.filter(q=>q.cat===id);
+        const scores = qs.map(q=>adj[q.id]).filter(v=>v!==undefined);
+        catScores[cat.name] = scores.length ? Number((scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(2)) : null;
+    });
+
+    // Flatten into row data
+    const payload = {
+        sessionId: SESSION_ID,
+        timestamp: new Date().toISOString(),
+        overallScore: Number(overall.toFixed(2)),
+        hudsonLevel: hudson.name,
+        catReporting: catScores['Reporting & Communication'],
+        catLearning: catScores['Learning & Improvement'],
+        catRisk: catScores['Risk Management & Awareness'],
+        catLeadership: catScores['Leadership & Trust'],
+        catBehaviour: catScores['Behaviour & Culture']
+    };
+
+    // Add raw answers Q1-Q30
+    for(let i=1;i<=30;i++) payload['q'+i] = answers[i] || '';
+
+    // Add adjusted scores Q1a-Q30a
+    for(let i=1;i<=30;i++) payload['q'+i+'_adj'] = adj[i] !== undefined ? adj[i] : '';
+
+    // Add comments
+    const commentsList = [];
+    Object.keys(comments).sort((a,b)=>Number(a)-Number(b)).forEach(qid => {
+        commentsList.push('Q'+qid+': '+comments[qid]);
+    });
+    payload.comments = commentsList.join(' | ');
+
+    if(GOOGLE_SHEETS_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE'){
+        // No URL configured — skip the POST, just show results locally
+        console.log('Google Sheets URL not configured. Submission data:', payload);
+        callback(true);
+        return;
+    }
+
+    showStatus('sending', 'Submitting your responses...');
+
+    fetch(GOOGLE_SHEETS_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(payload)
+    })
+    .then(() => {
+        showStatus('success', 'Responses saved successfully.');
+        localStorage.setItem('safetySurveySubmitted_'+SESSION_ID, 'true');
+        callback(true);
+    })
+    .catch(err => {
+        console.error('Submission error:', err);
+        showStatus('error', 'Could not save to server — your results are still available below.');
+        callback(true); // still show results locally
+    });
+}
+
+function showStatus(type, message){
+    const el = document.getElementById('statusBanner');
+    el.className = 'status-banner ' + type;
+    el.textContent = message;
+}
+
+// ============================================================
+// Build survey UI
+// ============================================================
+function buildSurvey(){
+    const container = document.getElementById('questionsContainer');
+    let currentCat = '';
+    let html = '';
+
+    QUESTIONS.forEach((q,i) => {
+        if(q.cat !== currentCat){
+            currentCat = q.cat;
+            const c = CATEGORIES[q.cat];
+            html += `<div class="category-banner" style="background:${c.color}">${c.icon} ${c.name}</div>`;
+        }
+
+        const savedVal = answers[q.id];
+        const savedComment = comments[q.id] || '';
+        const isAnswered = savedVal !== undefined;
+
+        html += `<div class="question-card${isAnswered?' answered':''}" id="qcard${q.id}">
+            <div class="question-label" style="color:${CATEGORIES[q.cat].color}">Question ${q.id} of 30</div>
+            <div class="question-text">${q.text}</div>
+            <div class="likert-group">`;
+
+        for(let v=1;v<=6;v++){
+            const sel = savedVal==v ? ' selected' : '';
+            html += `<button type="button" class="likert-btn${sel}" data-q="${q.id}" data-v="${v}" onclick="selectAnswer(${q.id},${v},this)">
+                <span class="likert-value">${v}</span>
+                <span class="likert-label">${LIKERT[v-1]}</span>
+            </button>`;
+        }
+
+        html += `</div>
+            <button type="button" class="comment-toggle" onclick="toggleComment(${q.id})">+ Add comment</button>
+            <div class="comment-box${savedComment?' show':''}" id="cbox${q.id}">
+                <textarea id="comment${q.id}" placeholder="Optional comment..." oninput="saveComment(${q.id})">${savedComment}</textarea>
+            </div>
+        </div>`;
+    });
+
+    container.innerHTML = html;
+    updateProgress();
+}
+
+function selectAnswer(qid, val, btn){
+    // Check if already submitted
+    if(localStorage.getItem('safetySurveySubmitted_'+SESSION_ID)){
+        alert('You have already submitted your survey. Click "Retake Survey" on your results page to start again.');
+        return;
+    }
+    answers[qid] = val;
+    const card = document.getElementById('qcard'+qid);
+    card.classList.add('answered');
+    card.querySelectorAll('.likert-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    updateProgress();
+    saveData();
+}
+
+function toggleComment(qid){
+    document.getElementById('cbox'+qid).classList.toggle('show');
+}
+
+function saveComment(qid){
+    const val = document.getElementById('comment'+qid).value.trim();
+    if(val) comments[qid] = val;
+    else delete comments[qid];
+    saveData();
+}
+
+function updateProgress(){
+    const count = Object.keys(answers).length;
+    const pct = (count/30)*100;
+    document.getElementById('progressFill').style.width = pct+'%';
+    document.getElementById('progressCount').textContent = count;
+}
+
+function getAdjustedScores(){
+    const adj = {};
+    QUESTIONS.forEach(q => {
+        if(answers[q.id]!==undefined){
+            adj[q.id] = q.rev ? 7-answers[q.id] : answers[q.id];
+        }
+    });
+    return adj;
+}
+
+// Submit
+document.getElementById('surveyForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    if(Object.keys(answers).length < 30){
+        alert('Please answer all 30 questions before submitting.');
+        return;
+    }
+
+    // Check duplicate submission
+    if(localStorage.getItem('safetySurveySubmitted_'+SESSION_ID)){
+        alert('You have already submitted your survey.');
+        showResults();
+        return;
+    }
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Submitting...';
+
+    sendToGoogleSheets(function(ok){
+        btn.disabled = false;
+        btn.textContent = 'Submit Survey';
+        showResults();
+    });
+});
+
+function showResults(){
+    const adj = getAdjustedScores();
+    const vals = Object.values(adj);
+    const overall = vals.reduce((a,b)=>a+b,0)/vals.length;
+    const hudson = getHudson(overall);
+
+    document.getElementById('surveyPage').style.display = 'none';
+    document.getElementById('resultsPage').style.display = 'block';
+
+    document.getElementById('overallScore').textContent = overall.toFixed(2);
+    document.getElementById('hudsonLevelResult').innerHTML =
+        `<strong style="font-size:20px">${hudson.name}</strong><br><span style="font-size:14px;opacity:0.9">${hudson.desc}</span>`;
+
+    renderHudsonLadder(overall);
+    renderCategoryBars(adj);
+    renderTopBottom(adj);
+    renderComments();
+    saveData();
+
+    window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function renderHudsonLadder(score){
+    const active = getHudson(score);
+    const ranges = ['> 5.20','4.50 \u2013 5.20','3.50 \u2013 4.49','2.50 \u2013 3.49','< 2.50'];
+    let html = '';
+    HUDSON.forEach((h,i) => {
+        const isActive = h.level === active.level;
+        html += `<div class="hudson-rung${isActive?' active':''}" style="background:${h.color}22;border-left:4px solid ${h.color}">
+            <div class="hudson-level" style="color:${h.color}">${h.name} (L${h.level})</div>
+            <div class="hudson-desc">${h.desc}</div>
+            <div class="hudson-range">${ranges[i]}</div>
+        </div>`;
+    });
+    document.getElementById('hudsonLadder').innerHTML = html;
+}
+
+function renderCategoryBars(adj){
+    let html = '';
+    Object.entries(CATEGORIES).forEach(([id,cat]) => {
+        const qs = QUESTIONS.filter(q=>q.cat===id);
+        const scores = qs.map(q=>adj[q.id]).filter(v=>v!==undefined);
+        const avg = scores.length ? scores.reduce((a,b)=>a+b,0)/scores.length : 0;
+        const pct = (avg/6)*100;
+        html += `<div class="cat-bar-row">
+            <div class="cat-bar-label">${cat.icon} ${cat.name}</div>
+            <div class="cat-bar-track"><div class="cat-bar-fill" style="width:${pct}%;background:${cat.color}">${avg.toFixed(2)}</div></div>
+            <div class="cat-bar-score" style="color:${cat.color}">${getHudson(avg).name}</div>
+        </div>`;
+    });
+    document.getElementById('categoryBars').innerHTML = html;
+}
+
+function renderTopBottom(adj){
+    const ranked = QUESTIONS.map(q=>({id:q.id,text:q.text,cat:q.cat,score:adj[q.id]}))
+        .filter(q=>q.score!==undefined)
+        .sort((a,b)=>b.score-a.score);
+
+    const top5 = ranked.slice(0,5);
+    const bot5 = ranked.slice(-5).reverse();
+
+    document.getElementById('topStatements').innerHTML = renderRankList(top5,'top');
+    document.getElementById('bottomStatements').innerHTML = renderRankList(bot5,'bottom');
+}
+
+function renderRankList(items, cls){
+    return '<ul class="rank-list">'+items.map((item,i) =>
+        `<li class="rank-item ${cls}">
+            <span class="rank-num">#${i+1}</span>
+            <span class="rank-text"><strong style="color:${CATEGORIES[item.cat].color}">Q${item.id}:</strong> ${item.text}</span>
+            <span class="rank-score">${item.score.toFixed(1)}</span>
+        </li>`
+    ).join('')+'</ul>';
+}
+
+function renderComments(){
+    const keys = Object.keys(comments);
+    const titleEl = document.getElementById('commentsSectionTitle');
+    const summaryEl = document.getElementById('commentsSummary');
+
+    if(keys.length === 0){
+        titleEl.style.display = 'none';
+        summaryEl.innerHTML = '';
+        return;
+    }
+    titleEl.style.display = '';
+    let html = '';
+    keys.sort((a,b)=>Number(a)-Number(b)).forEach(qid => {
+        const q = QUESTIONS.find(x=>x.id==qid);
+        html += `<div class="comment-entry" style="border-left-color:${CATEGORIES[q.cat].color}">
+            <div class="ce-q">Q${q.id}: ${q.text}</div>
+            <div>${comments[qid]}</div>
+        </div>`;
+    });
+    summaryEl.innerHTML = html;
+}
+
+function retakeSurvey(){
+    answers = {};
+    comments = {};
+    // Clear submission flag and generate new session ID
+    localStorage.removeItem('safetySurveySubmitted_'+SESSION_ID);
+    localStorage.removeItem('safetyCultureSurvey');
+    localStorage.removeItem('safetySurveySessionId');
+    // Reload to get fresh session ID
+    window.location.reload();
+}
+
+function exportResults(){
+    const adj = getAdjustedScores();
+    const vals = Object.values(adj);
+    const overall = vals.reduce((a,b)=>a+b,0)/vals.length;
+    const data = {
+        sessionId: SESSION_ID,
+        timestamp: new Date().toISOString(),
+        overallScore: Number(overall.toFixed(2)),
+        hudsonLevel: getHudson(overall).name,
+        answers,
+        adjustedScores: adj,
+        comments,
+        categoryScores: {}
+    };
+    Object.entries(CATEGORIES).forEach(([id,cat]) => {
+        const qs = QUESTIONS.filter(q=>q.cat===id);
+        const scores = qs.map(q=>adj[q.id]).filter(v=>v!==undefined);
+        data.categoryScores[cat.name] = scores.length ? Number((scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(2)) : null;
+    });
+    const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `safety_culture_results_${Date.now()}.json`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+}
+
+// Initialise
+(function init(){
+    const wasSubmitted = loadData();
+    buildSurvey();
+    if(wasSubmitted && Object.keys(answers).length === 30){
+        showResults();
+    }
+})();
+</script>
+
+</body>
+</html>
