@@ -510,7 +510,7 @@
 
         .admin-stat-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(5, 1fr);
             gap: 16px;
             margin-bottom: 20px;
         }
@@ -667,6 +667,9 @@
             margin-bottom: 0;
         }
 
+        @media (max-width: 1100px) {
+            .admin-stat-grid { grid-template-columns: repeat(3, 1fr); }
+        }
         @media (max-width: 900px) {
             .admin-grid-2 { grid-template-columns: 1fr; }
             .admin-stat-grid { grid-template-columns: repeat(2, 1fr); }
@@ -846,6 +849,10 @@
             <div class="admin-stat-card amber">
                 <div class="stat-number" id="adminOverallMean">—</div>
                 <div class="stat-label">Overall Mean</div>
+            </div>
+            <div class="admin-stat-card" id="adminHudsonCard" style="border-left-color:#666;">
+                <div class="stat-number" id="adminOverallHudson" style="font-size:20px;color:#444;">—</div>
+                <div class="stat-label">Hudson Level</div>
             </div>
         </div>
 
@@ -1493,13 +1500,19 @@ function renderAdminDashboard(){
     document.getElementById('adminResponseRate').textContent = responseRate + '%';
     document.getElementById('adminProgressBar').style.width = responseRate + '%';
 
-    // Overall mean
+    // Overall mean and Hudson level
     if(responseCount > 0){
         const overallScores = responses.map(r => r.overallScore).filter(v => v > 0);
         const overallMean = overallScores.length > 0 ? mean(overallScores) : 0;
         document.getElementById('adminOverallMean').textContent = overallMean.toFixed(2);
+        const hudson = getHudson(overallMean);
+        document.getElementById('adminOverallHudson').textContent = hudson.name;
+        document.getElementById('adminOverallHudson').style.color = hudson.color;
+        document.getElementById('adminHudsonCard').style.borderLeftColor = hudson.color;
     } else {
         document.getElementById('adminOverallMean').textContent = '—';
+        document.getElementById('adminOverallHudson').textContent = '—';
+        document.getElementById('adminHudsonCard').style.borderLeftColor = '#666';
     }
 
     if(responseCount === 0){
@@ -1544,9 +1557,11 @@ function renderAdminHudsonDist(responses){
 }
 
 function renderAdminCategoryResults(responses){
+    const catKeyMap = {A:'catReporting', B:'catLearning', C:'catRisk', D:'catLeadership', E:'catBehaviour'};
     let html = '';
     Object.entries(CATEGORIES).forEach(([id, cat]) => {
-        const catScores = responses.map(r => r['cat'+id.charAt(0).toUpperCase()+id.slice(1)]).filter(v => v !== undefined && v !== null && v !== '');
+        const dataKey = catKeyMap[id];
+        const catScores = responses.map(r => r[dataKey]).filter(v => v !== undefined && v !== null && v !== '' && v !== 0);
         if(catScores.length === 0) return;
 
         const m = mean(catScores);
