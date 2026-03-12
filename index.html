@@ -639,16 +639,27 @@
             margin-bottom: 0;
         }
 
-        .hudson-dist-bar {
-            height: 26px;
-            border-radius: 4px;
-            min-width: 30px;
+        /* Collapsible section */
+        .admin-collapsible {
+            width: 100%;
+        }
+        .admin-collapsible-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 24px;
+            cursor: pointer;
+            list-style: none;
+            user-select: none;
+        }
+        .admin-collapsible-header::-webkit-details-marker { display: none; }
+        .admin-collapse-icon {
             font-size: 12px;
-            line-height: 26px;
-            text-align: center;
-            color: white;
-            font-weight: 600;
-            transition: width 0.4s ease;
+            color: #999;
+            transition: transform 0.2s;
+        }
+        details[open] .admin-collapse-icon {
+            transform: rotate(180deg);
         }
 
         .admin-export-section {
@@ -859,27 +870,11 @@
             </div>
         </div>
 
-        <!-- Row 1: Hudson + Category side by side -->
+        <!-- Row 1: Category Scores (full width) -->
         <div class="admin-grid-2">
-            <div class="admin-panel">
-                <div class="admin-panel-title">Hudson Level Distribution</div>
-                <div id="adminHudsonDist"></div>
-            </div>
-            <div class="admin-panel">
-                <div class="admin-panel-title">Category Results</div>
-                <table class="admin-table">
-                    <thead>
-                        <tr>
-                            <th>Category</th>
-                            <th>Mean</th>
-                            <th>SD</th>
-                            <th>Hudson Level</th>
-                        </tr>
-                    </thead>
-                    <tbody id="adminCategoryTable">
-                        <tr><td colspan="4" style="text-align:center;padding:20px;color:#999;">No responses yet</td></tr>
-                    </tbody>
-                </table>
+            <div class="admin-panel admin-panel-full">
+                <div class="admin-panel-title">Category Scores</div>
+                <div id="adminCategoryBars"></div>
             </div>
         </div>
 
@@ -908,6 +903,19 @@
             <div class="admin-panel admin-panel-full">
                 <div class="admin-panel-title">All Comments</div>
                 <div id="adminAllComments"></div>
+            </div>
+        </div>
+
+        <!-- Row 5: All Questions (collapsible, full width) -->
+        <div class="admin-grid-2">
+            <div class="admin-panel admin-panel-full" style="padding:0;">
+                <details class="admin-collapsible" open>
+                    <summary class="admin-collapsible-header">
+                        <span class="admin-panel-title" style="margin:0;padding:0;border:none;">All 30 Questions — Ranked by Score</span>
+                        <span class="admin-collapse-icon">&#9660;</span>
+                    </summary>
+                    <div style="padding:0 24px 20px;" id="adminAllQuestions"></div>
+                </details>
             </div>
         </div>
 
@@ -1524,48 +1532,25 @@ function renderAdminDashboard(){
         document.getElementById('adminHudsonCard').style.borderLeftColor = '#666';
     }
 
+    const noData = '<p style="text-align:center;color:#999;padding:20px;">No responses yet</p>';
     if(responseCount === 0){
-        document.getElementById('adminHudsonDist').innerHTML = '<p style="text-align:center;color:#999;padding:20px;">No responses yet</p>';
-        document.getElementById('adminCategoryTable').innerHTML = '<tr><td colspan="4" style="text-align:center;padding:20px;color:#999;">No responses yet</td></tr>';
-        document.getElementById('adminTopQuestions').innerHTML = '<p style="text-align:center;color:#999;padding:20px;">No responses yet</p>';
-        document.getElementById('adminBottomQuestions').innerHTML = '<p style="text-align:center;color:#999;padding:20px;">No responses yet</p>';
-        document.getElementById('adminMostDivisive').innerHTML = '<p style="text-align:center;color:#999;padding:20px;">No responses yet</p>';
+        document.getElementById('adminCategoryBars').innerHTML = noData;
+        document.getElementById('adminAllQuestions').innerHTML = noData;
+        document.getElementById('adminTopQuestions').innerHTML = noData;
+        document.getElementById('adminBottomQuestions').innerHTML = noData;
+        document.getElementById('adminMostDivisive').innerHTML = noData;
         document.getElementById('adminAllComments').innerHTML = '<p style="text-align:center;color:#999;padding:20px;">No comments yet</p>';
         return;
     }
 
-    renderAdminHudsonDist(responses);
-    renderAdminCategoryResults(responses);
+    renderAdminCategoryBars(responses);
+    renderAdminAllQuestions(responses);
     renderAdminTopBottomQuestions(responses);
     renderAdminMostDivisive(responses);
     renderAdminComments(responses);
 }
 
-function renderAdminHudsonDist(responses){
-    const hudsonCounts = {5:0, 4:0, 3:0, 2:0, 1:0};
-    responses.forEach(r => {
-        if(r.hudsonLevel){
-            const level = HUDSON.find(h=>h.name === r.hudsonLevel);
-            if(level) hudsonCounts[level.level]++;
-        }
-    });
-
-    let html = '';
-    HUDSON.forEach(h => {
-        const count = hudsonCounts[h.level] || 0;
-        const pct = responses.length > 0 ? (count / responses.length) * 100 : 0;
-        html += `<div style="display:flex;align-items:center;margin-bottom:10px;gap:10px;">
-            <div style="min-width:100px;font-size:13px;font-weight:600;color:#444;">${h.name}</div>
-            <div style="flex:1;background:#f0f0f0;border-radius:4px;height:26px;overflow:hidden;">
-                <div class="hudson-dist-bar" style="display:block;background:${h.color};width:${pct > 0 ? Math.max(8, pct) : 0}%;">${count}</div>
-            </div>
-            <div style="min-width:28px;font-size:13px;font-weight:700;color:#555;text-align:right;">${count}</div>
-        </div>`;
-    });
-    document.getElementById('adminHudsonDist').innerHTML = html;
-}
-
-function renderAdminCategoryResults(responses){
+function renderAdminCategoryBars(responses){
     const catKeyMap = {A:'catReporting', B:'catLearning', C:'catRisk', D:'catLeadership', E:'catBehaviour'};
     let html = '';
     Object.entries(CATEGORIES).forEach(([id, cat]) => {
@@ -1575,18 +1560,97 @@ function renderAdminCategoryResults(responses){
 
         const m = mean(catScores);
         const s = sd(catScores);
-        const hudson = getHudson(m).name;
-        const isHighSD = s > 1.0;
-        const sdClass = isHighSD ? 'variance-high' : '';
+        const pct = (m / 6) * 100;
+        const hudson = getHudson(m);
 
-        html += `<tr>
-            <td style="border-left:4px solid ${cat.color};"><strong>${cat.name}</strong></td>
-            <td>${m.toFixed(2)}</td>
-            <td class="${sdClass}">${s.toFixed(2)}</td>
-            <td>${hudson}</td>
-        </tr>`;
+        html += `<div style="margin-bottom:16px;">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;">
+                <span style="font-size:13px;font-weight:600;color:${cat.color};">${cat.name}</span>
+                <span style="font-size:12px;color:#888;">${hudson.name}</span>
+            </div>
+            <div style="position:relative;background:#f0f0f0;border-radius:6px;height:28px;overflow:hidden;">
+                <div style="height:100%;width:${pct}%;background:${cat.color};border-radius:6px;transition:width 0.5s;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;">
+                    <span style="color:white;font-size:12px;font-weight:700;">${m.toFixed(2)}</span>
+                </div>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-top:2px;">
+                <span style="font-size:11px;color:#aaa;">SD: ${s.toFixed(2)}${s > 1.0 ? ' ⚠' : ''}</span>
+                <span style="font-size:11px;color:#aaa;">/ 6.00</span>
+            </div>
+        </div>`;
     });
-    document.getElementById('adminCategoryTable').innerHTML = html;
+    document.getElementById('adminCategoryBars').innerHTML = html;
+}
+
+function renderAdminAllQuestions(responses){
+    // Build question data with mean and SD, then sort by mean score (highest first)
+    const questionData = QUESTIONS.map(q => {
+        const scores = responses.map(r => r['q'+q.id+'_adj']).filter(v => v !== undefined && v !== null && v !== '' && v !== 0);
+        return {
+            id: q.id,
+            text: q.text,
+            cat: q.cat,
+            mean: scores.length > 0 ? mean(scores) : 0,
+            sd: scores.length > 0 ? sd(scores) : 0
+        };
+    }).sort((a, b) => b.mean - a.mean);
+
+    let html = '<div style="display:flex;flex-direction:column;gap:5px;">';
+
+    questionData.forEach((q, i) => {
+        const cat = CATEGORIES[q.cat];
+        const meanPct = (q.mean / 6) * 100;
+
+        // SD whisker positions (clamped to 0-100%)
+        const sdLowPct = Math.max(0, ((q.mean - q.sd) / 6) * 100);
+        const sdHighPct = Math.min(100, ((q.mean + q.sd) / 6) * 100);
+
+        // Bar colour by score threshold
+        let barColor;
+        if(q.mean < 2.5) barColor = '#C62828';
+        else if(q.mean < 3.5) barColor = '#EF6C00';
+        else if(q.mean < 4.5) barColor = '#F9A825';
+        else barColor = '#2E7D32';
+
+        const shortText = q.text.length > 55 ? q.text.substring(0, 52) + '...' : q.text;
+        const rank = i + 1;
+
+        // The bar shows the mean; the SD is shown as whisker lines extending left/right from the mean
+        html += `<div style="display:flex;align-items:center;gap:8px;padding:3px 0;" title="Q${q.id}: ${q.text.replace(/"/g,'&quot;')}&#10;Mean: ${q.mean.toFixed(2)} | SD: ${q.sd.toFixed(2)}&#10;Range: ${Math.max(1,q.mean-q.sd).toFixed(1)} – ${Math.min(6,q.mean+q.sd).toFixed(1)}">
+            <span style="min-width:22px;font-size:11px;color:#aaa;text-align:right;">${rank}</span>
+            <span style="min-width:30px;font-size:11px;font-weight:700;color:${cat.color};">Q${q.id}</span>
+            <span style="min-width:200px;max-width:200px;font-size:12px;color:#555;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${shortText}</span>
+            <div style="flex:1;position:relative;background:#f0f0f0;border-radius:4px;height:24px;">
+                <!-- Mean bar -->
+                <div style="position:absolute;top:2px;left:0;height:20px;width:${meanPct}%;background:${barColor};border-radius:4px;transition:width 0.3s;"></div>
+                <!-- SD whisker: horizontal line from -1SD to +1SD -->
+                <div style="position:absolute;top:50%;left:${sdLowPct}%;width:${sdHighPct - sdLowPct}%;height:2px;background:#333;transform:translateY(-50%);"></div>
+                <!-- SD whisker: left cap -->
+                <div style="position:absolute;top:50%;left:${sdLowPct}%;width:2px;height:12px;background:#333;transform:translate(-1px,-50%);border-radius:1px;"></div>
+                <!-- SD whisker: right cap -->
+                <div style="position:absolute;top:50%;left:${sdHighPct}%;width:2px;height:12px;background:#333;transform:translate(-1px,-50%);border-radius:1px;"></div>
+                <!-- Mean marker diamond -->
+                <div style="position:absolute;top:50%;left:${meanPct}%;width:8px;height:8px;background:white;border:2px solid #333;transform:translate(-50%,-50%) rotate(45deg);border-radius:1px;"></div>
+            </div>
+            <span style="min-width:34px;font-size:12px;font-weight:700;color:#333;text-align:right;">${q.mean.toFixed(1)}</span>
+            <span style="min-width:50px;font-size:11px;color:${q.sd > 1.0 ? '#C62828' : '#999'};text-align:right;font-weight:${q.sd > 1.0 ? '700' : '400'};">\u00B1${q.sd.toFixed(2)}</span>
+        </div>`;
+    });
+
+    html += '</div>';
+
+    // Legend
+    html += `<div style="display:flex;gap:14px;margin-top:14px;padding-top:12px;border-top:1px solid #f0f0f0;justify-content:center;flex-wrap:wrap;align-items:center;">
+        <span style="font-size:11px;color:#666;"><span style="display:inline-block;width:10px;height:10px;background:#C62828;border-radius:2px;margin-right:3px;vertical-align:middle;"></span>&lt;2.5 Pathological</span>
+        <span style="font-size:11px;color:#666;"><span style="display:inline-block;width:10px;height:10px;background:#EF6C00;border-radius:2px;margin-right:3px;vertical-align:middle;"></span>2.5–3.5 Reactive</span>
+        <span style="font-size:11px;color:#666;"><span style="display:inline-block;width:10px;height:10px;background:#F9A825;border-radius:2px;margin-right:3px;vertical-align:middle;"></span>3.5–4.5 Calculative</span>
+        <span style="font-size:11px;color:#666;"><span style="display:inline-block;width:10px;height:10px;background:#2E7D32;border-radius:2px;margin-right:3px;vertical-align:middle;"></span>&gt;4.5 Proactive+</span>
+        <span style="font-size:11px;color:#666;margin-left:6px;"><span style="display:inline-block;width:8px;height:8px;border:2px solid #333;transform:rotate(45deg);margin-right:4px;vertical-align:middle;"></span>Mean</span>
+        <span style="font-size:11px;color:#666;"><span style="display:inline-block;width:20px;height:2px;background:#333;margin-right:4px;vertical-align:middle;position:relative;top:-1px;"></span>\u00B11 SD range</span>
+        <span style="font-size:11px;color:#C62828;font-weight:600;">Red \u00B1 = SD &gt; 1.0</span>
+    </div>`;
+
+    document.getElementById('adminAllQuestions').innerHTML = html;
 }
 
 function renderAdminTopBottomQuestions(responses){
